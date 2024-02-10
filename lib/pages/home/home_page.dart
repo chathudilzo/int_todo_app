@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:int_todo_app/pages/home/home_controller.dart';
 import 'package:int_todo_app/services/auth_controller.dart';
@@ -12,51 +13,132 @@ class HomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Task Management App'),
-        actions: [
-          IconButton(
-            onPressed: () {
-              _authController.signOut();
-            },
-            icon: Icon(Icons.logout),
+      body: CustomScrollView(
+        slivers: [
+          SliverAppBar(
+    expandedHeight: 200.h,
+    floating: false,
+    pinned: true,
+
+    backgroundColor: Colors.blueAccent,
+    foregroundColor: Colors.greenAccent,
+    flexibleSpace: FlexibleSpaceBar(
+      title: Text('Task Management app',style: TextStyle(fontSize: 16.sp,fontWeight: FontWeight.bold),),
+      background: Container(
+        decoration: BoxDecoration(
+          //image: DecorationImage(image: AssetImage('assets/images/nav1.png'),fit: BoxFit.cover),
+          gradient: LinearGradient(colors: [
+            Color.fromARGB(255, 7, 9, 107),
+            Color.fromARGB(255, 28, 48, 78)
+          ])
+        ),
+        child: SafeArea(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              SizedBox(
+                width: 150.w,
+                height: 150.w,
+                child: Image(image: AssetImage('assets/images/logo2.png'),fit: BoxFit.cover,)
+              ),
+              // Padding(
+              //   padding: const EdgeInsets.all(8.0),
+              //   child: Text(subText??'',style: TextStyle(color: Color.fromARGB(255, 39, 43, 44),fontSize: 10.sp,fontWeight: FontWeight.bold),),
+              // ),
+            ],
+          ),
+        ),
+      ),
+    ),
+
+    //title:Text(title??''),
+    actions: [
+      IconButton(onPressed: (){
+
+      }, icon:Icon(Icons.menu))
+    ],
+  ),
+          SliverToBoxAdapter(
+            child: Container(
+              padding: EdgeInsets.all(16.0),
+              child: Obx(() {
+                if (_homeController.isLoading.value) {
+                  return Center(
+                    child: CircularProgressIndicator(),
+                  );
+                } else if (_homeController.tasks.isEmpty) {
+                  return Center(
+                    child: Text('No tasks yet.'),
+                  );
+                } else {
+                  return ListView.builder(
+                    shrinkWrap: true,
+                    physics: NeverScrollableScrollPhysics(),
+                    itemCount: _homeController.tasks.length,
+                    itemBuilder: (context, index) {
+                      var task = _homeController.tasks[index];
+                      return Container(
+  margin: EdgeInsets.symmetric(vertical: 8.0),
+  padding: EdgeInsets.all(16.0),
+  decoration: BoxDecoration(
+    color: Colors.white,
+    borderRadius: BorderRadius.circular(12.0),
+    boxShadow: [
+      BoxShadow(
+        color: Colors.grey.withOpacity(0.5),
+        spreadRadius: 1,
+        blurRadius: 3,
+        offset: Offset(0, 2), // changes position of shadow
+      ),
+    ],
+  ),
+  child: InkWell(
+    onTap: () {
+      print(task.title);
+      Get.toNamed('/task', arguments: task);
+    },
+    child: Row(
+      children: [
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                task.title,
+                style: TextStyle(
+                  fontSize: 18.0,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              SizedBox(height: 8.0),
+              Text(
+                task.description,
+                style: TextStyle(
+                  fontSize: 14.0,
+                  color: Colors.grey,
+                ),
+              ),
+            ],
+          ),
+        ),
+        Checkbox(
+          value: task.isCompleted,
+          onChanged: (value) {
+            _homeController.updateTaskCompletion(task, value ?? false);
+          },
+        ),
+      ],
+    ),
+  ),
+);
+
+                    },
+                  );
+                }
+              }),
+            ),
           ),
         ],
-      ),
-      body: Container(
-        padding: EdgeInsets.all(16.0),
-        child: Obx(() {
-          if (_homeController.isLoading.value) {
-            return Center(
-              child: CircularProgressIndicator(),
-            );
-          } else if (_homeController.tasks.isEmpty) {
-            return Center(
-              child: Text('No tasks yet.'),
-            );
-          } else {
-            return ListView.builder(
-              itemCount: _homeController.tasks.length,
-              itemBuilder: (context, index) {
-                var task = _homeController.tasks[index];
-                return ListTile(
-                  title: Text(task.title),
-                  subtitle: Text(task.description),
-                  trailing: Checkbox(
-                    value: task.isCompleted,
-                    onChanged: (value) {
-                      _homeController.updateTaskCompletion(task, value ?? false);
-                    },
-                  ),
-                  onTap: () {
-                    print(task.title);
-                    Get.toNamed('/task', arguments: task);
-                  },
-                );
-              },
-            );
-          }
-        }),
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
@@ -65,6 +147,7 @@ class HomePage extends StatelessWidget {
         child: Icon(Icons.add),
       ),
     );
+  
   }
 
   void _showAddTaskDialog(BuildContext context) {

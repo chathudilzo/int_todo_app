@@ -43,48 +43,80 @@ class _TaskPageState extends State<TaskPage> {
         ],
       ),
       body: Container(
-        padding: EdgeInsets.all(16.0),
-        child: Obx(
-          () {
-            return Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                _buildTaskDetail('Title', _taskController.task.value?.title ?? task.title),
-                _buildTaskDetail('Description', _taskController.task.value?.description ?? task.description),
-                _buildTaskDetail('Due Date', _taskController.task.value?.dueDate ?? task.dueDate),
-                _buildTaskDetail('Is Completed', _taskController.task.value?.isCompleted ?? task.isCompleted),
-              ],
-            );
-          },
-        ),
-      ),
+  padding: EdgeInsets.all(16.0),
+  child: Obx(
+    () {
+      return Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          _buildTaskDetail(
+            'Title',
+            _taskController.task.value?.title ?? task.title,
+            Icons.title, // Icon for the title
+            Colors.blue, // Color for the title
+          ),
+          _buildTaskDetail(
+            'Description',
+            _taskController.task.value?.description ?? task.description,
+            Icons.description, // Icon for the description
+            Colors.green, // Color for the description
+          ),
+          _buildTaskDetail(
+            'Due Date',
+            _taskController.task.value?.dueDate ?? task.dueDate,
+            Icons.calendar_today, // Icon for the due date
+            Colors.orange, // Color for the due date
+          ),
+          _buildTaskDetail(
+            'Is Completed',
+            _taskController.task.value?.isCompleted ?? task.isCompleted,
+            Icons.check_circle, // Icon for the is completed
+            Colors.teal, // Color for the is completed
+          ),
+        ],
+      );
+    },
+  ),
+)
+
     );
   }
 
-  Widget _buildTaskDetail(String label, dynamic value) {
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 8.0),
-      child: RichText(
-        text: TextSpan(
-          style: TextStyle(
-            color: Colors.black87,
-            fontSize: 16.0,
-          ),
-          children: [
-            TextSpan(
-              text: '$label: ',
-              style: TextStyle(
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-            TextSpan(
-              text: '$value',
-            ),
-          ],
+  Widget _buildTaskDetail(String label, dynamic value, IconData icon, Color color) {
+  return Padding(
+    padding: const EdgeInsets.only(bottom: 16.0),
+    child: Row(
+      children: [
+        Icon(
+          icon,
+          color: color,
+          size: 24.0,
         ),
-      ),
-    );
-  }
+        SizedBox(width: 8.0),
+        RichText(
+          text: TextSpan(
+            style: TextStyle(
+              color: Colors.black87,
+              fontSize: 16.0,
+            ),
+            children: [
+              TextSpan(
+                text: '$label: ',
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              TextSpan(
+                text: '$value',
+              ),
+            ],
+          ),
+        ),
+      ],
+    ),
+  );
+}
+
 
   void _showEditDialog(BuildContext context, Task task) {
     TextEditingController titleController = TextEditingController(text: task.title);

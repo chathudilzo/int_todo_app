@@ -61,6 +61,7 @@ class HomeController extends GetxController {
 
 void addTask(Task task) async {
     try {
+      
       String userId = _authController.user.value?.uid ?? '';
       if (userId.isNotEmpty) {
         await FirebaseFirestore.instance

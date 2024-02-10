@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:int_todo_app/firebase_options.dart';
@@ -25,23 +26,23 @@ void main() async {
 }
 class MyApp extends StatelessWidget {
   final AuthController _authController = Get.find();
+  
 
   @override
   Widget build(BuildContext context) {
-    return GetMaterialApp(
+    return ScreenUtilInit(
+      designSize: const Size(375,812),
+      builder:(context, child) => GetMaterialApp(
       title: 'Task Management App',
       theme: ThemeData(primarySwatch: Colors.blue),
       home: FutureBuilder<User?>(
         // Check if the user is authenticated
         future: _authController.checkAuth(),
         builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return CircularProgressIndicator();
-          } else {
             return snapshot.data != null
                 ? HomePage() // Navigate to home page if authenticated
                 : LoginPage(); // Show login page if not authenticated
-          }
+          
         },
       ),
       getPages: [
@@ -51,6 +52,7 @@ class MyApp extends StatelessWidget {
         GetPage(name: '/task', page: () => TaskPage())
 
       ],
+    ),
     );
   }
 }
