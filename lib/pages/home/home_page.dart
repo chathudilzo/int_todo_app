@@ -54,8 +54,8 @@ class HomePage extends StatelessWidget {
     //title:Text(title??''),
     actions: [
       IconButton(onPressed: (){
-
-      }, icon:Icon(Icons.menu))
+        _authController.signOut();
+      }, icon:Icon(Icons.logout))
     ],
   ),
           SliverToBoxAdapter(
