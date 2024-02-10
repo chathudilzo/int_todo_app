@@ -31,8 +31,17 @@ class AuthController extends GetxController {
         email: email,
         password: password,
       );
+
+      // Show success snackbar
+      Get.snackbar('Success', 'Registration successful',
+          snackPosition: SnackPosition.BOTTOM);
+
+      // Navigate to login page
+      Get.offAllNamed('/login');
     } catch (e) {
-      Get.snackbar('Error', 'Failed to register');
+
+      Get.snackbar('Error', 'Failed to register',
+          snackPosition: SnackPosition.BOTTOM);
     }
   }
 
@@ -42,20 +51,29 @@ class AuthController extends GetxController {
         email: email,
         password: password,
       );
+
+    
+      Get.snackbar('Success', 'Login successful',
+          snackPosition: SnackPosition.BOTTOM);
+
+      // Navigate to home page 
+      Get.offAllNamed('/home');
     } catch (e) {
-      Get.snackbar('Error', 'Failed to sign in');
+      
+      Get.snackbar('Error', 'Failed to sign in',
+          snackPosition: SnackPosition.BOTTOM);
     }
   }
 
   Future<void> signOut() async {
     await _auth.signOut();
+    Get.offAllNamed('/login');
   }
 
   Future<void> createUserProfile(String uid, String email) async {
     await _firestore.collection('users').doc(uid).set({
       'uid': uid,
       'email': email,
-      // Add additional user profile fields as needed
     });
   }
 
